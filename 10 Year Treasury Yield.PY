@@ -4,14 +4,19 @@ import matplotlib.pyplot as plt
 
 # Step 1: Data Collection
 def get_treasury_data():
-    # Download 10-Year Treasury Yield data
-    treasury_data = yf.download("^TNX", start="2000-01-01", end="2024-01-01", interval="1d")
+    """
+    Fetches historical 10-Year Treasury Yield data from Yahoo Finance.
+    """
+    treasury_data = yf.download("^TNX", start="2020-01-01", end="2025-03-15", interval="1d")
     treasury_data = treasury_data[['Close']].dropna()
     treasury_data.rename(columns={'Close': 'Yield'}, inplace=True)
     return treasury_data
 
 # Step 2: Basic Analysis
 def analyze_data(data):
+    """
+    Performs basic analysis by calculating daily changes, rolling averages, and rolling standard deviations.
+    """
     data['Daily Change'] = data['Yield'].diff()
     data['Rolling Average'] = data['Yield'].rolling(window=30).mean()
     data['Rolling Std Dev'] = data['Yield'].rolling(window=30).std()
@@ -19,19 +24,25 @@ def analyze_data(data):
 
 # Step 3: Summary Statistics
 def calculate_statistics(data):
+    """
+    Calculates summary statistics for the 10-Year Treasury Yield data.
+    """
     stats = {
-        "Mean Yield": data['Yield'].mean(),
-        "Median Yield": data['Yield'].median(),
-        "Standard Deviation of Yield": data['Yield'].std(),
-        "Max Yield": data['Yield'].max(),
-        "Min Yield": data['Yield'].min(),
-        "Mean Daily Change": data['Daily Change'].mean(),
-        "Standard Deviation of Daily Change": data['Daily Change'].std()
+        "Mean Yield": float(data['Yield'].mean()),
+        "Median Yield": float(data['Yield'].median()),
+        "Standard Deviation of Yield": float(data['Yield'].std()),
+        "Max Yield": float(data['Yield'].max()),
+        "Min Yield": float(data['Yield'].min()),
+        "Mean Daily Change": float(data['Daily Change'].mean()),
+        "Standard Deviation of Daily Change": float(data['Daily Change'].std())
     }
     return stats
 
 # Step 4: Visualization
 def plot_yield(data):
+    """
+    Plots the 10-Year Treasury Yield along with its 30-day rolling average.
+    """
     plt.figure(figsize=(10, 6))
     plt.plot(data['Yield'], label='10-Year Treasury Yield', color='blue')
     plt.plot(data['Rolling Average'], label='30-Day Rolling Average', color='orange', linestyle='--')
@@ -43,6 +54,9 @@ def plot_yield(data):
     plt.show()
 
 def plot_daily_change(data):
+    """
+    Plots the daily changes in the 10-Year Treasury Yield.
+    """
     plt.figure(figsize=(10, 6))
     plt.plot(data['Daily Change'], label='Daily Change', color='green')
     plt.title("Daily Changes in 10-Year Treasury Yield")
@@ -54,6 +68,9 @@ def plot_daily_change(data):
     plt.show()
 
 def plot_rolling_std(data):
+    """
+    Plots the rolling standard deviation of the 10-Year Treasury Yield.
+    """
     plt.figure(figsize=(10, 6))
     plt.plot(data['Rolling Std Dev'], label='30-Day Rolling Std Dev', color='purple')
     plt.title("Rolling Standard Deviation of 10-Year Treasury Yield")
@@ -73,6 +90,7 @@ if __name__ == "__main__":
     
     # Calculate and display statistics
     stats = calculate_statistics(treasury_data)
+    
     print("Summary Statistics for 10-Year Treasury Yield:")
     for key, value in stats.items():
         print(f"{key}: {value:.2f}")
